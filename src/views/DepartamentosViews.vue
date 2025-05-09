@@ -18,9 +18,8 @@ const columns = ref([
     { formatter: editRowButton, width: 80, hozAlign: 'center', cellClick: editRowClick },
     { formatter: deleteRowButton, width: 80, hozAlign: 'center', cellClick: deleteRowClick },
     // definición de las columnas de la tabla
-    { title: 'TITULO', field: 'title', width: 150},
-    { title: 'ARTISTA', field: 'artist', width: 150 },
-    { title: 'PRECIO', field: 'price', sorter: 'number', hozAlign: 'center', width: 150 },
+    { title: 'ID', field: 'id', sorter: 'number', hozAlign: 'center', width: 150 },
+    { title: 'NOMBRE', field: 'nombre', width: 150 },
 ])
 
 const tabulatorOptions = ref({
@@ -29,7 +28,7 @@ const tabulatorOptions = ref({
    pagination: true,
    // ver https://tabulator.info/docs/6.3/page#remote
    paginationMode: 'remote',
-   ajaxURL: 'http://localhost:8081/albums/range',
+   ajaxURL: 'http://127.0.0.1:3333/departamentos',
    paginationSize: 5,
    layout: 'fitColumns',
    footerElement: `<button class="-ml-2 rounded-sm px-4 py-1 bg-gray-200 
@@ -51,9 +50,8 @@ onMounted(async () => {
             agregar.addEventListener('click', () => {
                 // Limpiar el formulario para nuevo registro
                 formData.value = { 
-                    title: '', 
-                    artist: '', 
-                    price: '' 
+                    nombre: '', 
+                    id: '' 
                 }
                 // Resetear el ID de edición
                 editingId.value = null
@@ -68,16 +66,15 @@ onMounted(async () => {
 
 // Añadir la referencia para los datos del formulario
 const formData = ref({
-    title: '',
-    artist: '',
-    price: ''
+
+    nombre: '',
+    id: ''
 })
 
 // Definir la estructura del formulario
 const formFields = [
-  { id: 'title', label: 'Título del álbum', type: 'text' },
-  { id: 'artist', label: 'Nombre del artista', type: 'text' },
-  { id: 'price', label: 'Precio del álbum', type: 'number' }
+  { id: 'nombre', label: 'Nombre', type: 'text' },
+  { id: 'id', label: 'id', type: 'number' }
 ]
 
 // Añadir variable para el ID del registro que se está editando
@@ -113,7 +110,7 @@ const guardarCambios = async () => {
         
         if (editingId.value) {
             // Actualizar registro existente
-            response = await fetch(`http://localhost:8081/albums/${editingId.value}`, {
+            response = await fetch(`http://127.0.0.1:3333/departamentos/${editingId.value}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -122,7 +119,7 @@ const guardarCambios = async () => {
             });
         } else {
             // Crear nuevo registro
-            response = await fetch('http://localhost:8081/albums', {
+            response = await fetch('http://127.0.0.1:3333/departamentos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -145,7 +142,7 @@ const guardarCambios = async () => {
         }
 
         // Limpiar el formulario y cerrar el diálogo
-        formData.value = { title: '', artist: '', price: '' }
+        formData.value = {nombre: '', id: '' }
         editingId.value = null
         cerrarDialog()
 
@@ -157,7 +154,7 @@ const guardarCambios = async () => {
 
 const eliminarRegistro = async () => {
     try {
-        const response = await fetch(`http://localhost:8081/albums/${deleteId.value}`, {
+        const response = await fetch(`http://127.0.0.1:3333/departamentos/${deleteId.value}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
